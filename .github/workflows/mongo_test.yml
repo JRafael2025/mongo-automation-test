@@ -1,0 +1,27 @@
+name: Test MongoDB Connection
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-mongodb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🛠️ Checkout do código
+        uses: actions/checkout@v3
+
+      - name: 🐍 Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Instalar dependências
+        run: pip install pymongo
+
+      - name: 🔗 Testar Conexão com MongoDB Atlas
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+        run: python mongo_test.py
