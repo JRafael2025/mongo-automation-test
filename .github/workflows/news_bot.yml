@@ -1,12 +1,12 @@
-name: Test MongoDB Connection
+name: News Bot Automation
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 11 * * *"  # Executa às 08:00 BRT (11:00 UTC)
+  workflow_dispatch:
 
 jobs:
-  test-mongodb:
+  run-news-bot:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,9 +19,9 @@ jobs:
           python-version: "3.11"
 
       - name: 📦 Instalar dependências
-        run: pip install pymongo
+        run: pip install pymongo feedparser beautifulsoup4 requests
 
-      - name: 🔗 Testar Conexão com MongoDB Atlas
+      - name: 🔗 Executar o bot de notícias
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-        run: python mongo_test.py
+        run: python news_scraper.py
