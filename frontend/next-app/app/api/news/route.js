@@ -1,10 +1,7 @@
 import { MongoClient } from "mongodb";
+import { NextResponse } from "next/server";
 
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ message: "Método não permitido" });
-  }
-
+export async function GET() {
   try {
     const client = new MongoClient(process.env.MONGO_URI);
     await client.connect();
@@ -14,9 +11,9 @@ export default async function handler(req, res) {
     const news = await collection.find().sort({ published: -1 }).limit(10).toArray();
     await client.close();
 
-    res.status(200).json(news);
+    return NextResponse.json(news);
   } catch (error) {
     console.error("❌ ERRO AO BUSCAR NOTÍCIAS:", error);
-    res.status(500).json({ message: "Erro ao buscar notícias", error });
+    return NextResponse.json({ message: "Erro ao buscar notícias", error }, { status: 500 });
   }
 }
