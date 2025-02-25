@@ -1,19 +1,11 @@
-import { MongoClient } from "mongodb";
-import { NextResponse } from "next/server";
-
-export async function GET() {
+export default async function handler(req, res) {
   try {
-    const client = new MongoClient(process.env.MONGO_URI);
-    await client.connect();
-    const db = client.db("news_db");
-    const collection = db.collection("news_collection");
-
-    const news = await collection.find().sort({ published: -1 }).limit(10).toArray();
-    await client.close();
-
-    return NextResponse.json(news);
+    const response = await fetch("https://meu-bot-de-noticias.onrender.com/news");
+    const news = await response.json();
+    
+    res.status(200).json(news);
   } catch (error) {
-    console.error("❌ ERRO AO BUSCAR NOTÍCIAS:", error);
-    return NextResponse.json({ message: "Erro ao buscar notícias", error }, { status: 500 });
+    console.error("Erro ao buscar notícias:", error);
+    res.status(500).json({ error: "Erro ao buscar notícias" });
   }
 }
